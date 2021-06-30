@@ -1,0 +1,102 @@
+import argparse
+import collections
+from re import split
+from data.wider_face import WiderFaceDataset
+
+from torch.optim import lr_scheduler
+from models.model import MobileNetSeg
+import torch
+import numpy as np
+
+# from data.data_loader import *
+import data.data_loader as module_data
+
+from trainer.trainer import Trainer
+from utils import prepare_device
+from config import *
+import models.model_loss as module_loss
+import models.metric as module_metric
+
+from torch.utils.data import DataLoader
+from parse_config import ConfigParser
+
+# fix random seeds for reproducibility
+SEED = 123
+torch.manual_seed(SEED)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+np.random.seed(SEED)
+
+def main(config):
+    logger = config.get_logger('train')
+    
+    train_data = WiderFaceDataset(split='train')
+
+    train_data_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    _ , valid_data_loader = train_data_loader._sp
+    # train_data_loader = config.init_obj('train_data_loader', module_data)
+
+    heads = {
+            'hm': 1,
+            'wh': 2,
+            "hm_offset": 2,
+            "landmarks": 10
+        }
+    
+    model = MobileNetSeg(base_name='mobilenetv2_10', heads=heads)
+    logger.info(model)
+
+    model = model.to(DEVICE)
+
+    # get function handles of loss and metrics
+    criterion = getattr(module_loss, 'center_face_loss')
+    metrics = [getattr(module_metric, met) for met in ["accuracy", "top_k_acc"]]
+
+    # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
+    trainable_params = filter(lambda p: p.requires_grad, model.parameters())
+    
+    # optimizer = config.init_obj('optimizer', torch.optim, trainable_params)
+    optimizer = torch.optim.Adam(trainable_params, lr=0.01, weight_decay=0, amsgrad=True)
+
+    # lr_scheduler = config.init_obj('lr_scheduler', torch.optim.lr_scheduler, optimizer)
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.1)
+
+    trainer = Trainer(model, criterion, metrics, optimizer,
+                      config=config,
+                      device=DEVICE,
+                      data_loader=train_data_loader,
+                    #   valid_data_loader=val_data_loader,
+                      lr_scheduler=lr_scheduler)
+
+    trainer.train()
+    
+
+if __name__ == '__main__':
+  args = argparse.ArgumentParser(description='PyTorch Template')
+  args.add_argument('-c', '--config', default="config.json", type=str,
+                    help='config file path (default: None)')
+  args.add_argument('-r', '--resume', default=None, type=str,
+                    help='path to latest checkpoint (default: None)')
+  args.add_argument('-d', '--device', default=DEVICE, type=str,
+                    help='indices of GPUs to enable (default: all)')
+
+  # custom cli options to modify configuration from default values given in json file.
+  CustomArgs = collections.namedtuple('CustomArgs', 'flags type target')
+  options = [
+      CustomArgs(['--lr', '--learning_rate'], type=float, target='optimizer; args; lr'),
+      CustomArgs(['--bs', '--batch_size'], type=int, target='data_loader; args; batch_size')
+  ]
+  config = ConfigParser.from_args(args, options)
+  main(config)
+
+
+
+
+    
+
+
+
+
+    
+
+

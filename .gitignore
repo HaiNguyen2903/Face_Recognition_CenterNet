@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+.ipynb_checkpoints/
+.vscode/
+test_around.ipynb
+.idea/
+.test.ipynb
+.test_gaussian.ipynb
+.saved/
+
