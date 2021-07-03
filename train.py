@@ -1,6 +1,8 @@
 import argparse
 import collections
 from re import split
+
+from torch.utils.data import sampler
 from data.wider_face import WiderFaceDataset
 
 from torch.optim import lr_scheduler
@@ -17,8 +19,14 @@ from config import *
 import models.model_loss as module_loss
 import models.metric as module_metric
 
-from torch.utils.data import DataLoader
+# from torch.utils.data import DataLoader
+from data.data_loader import *
 from parse_config import ConfigParser
+
+from torch.utils.data import random_split
+
+# for debugging
+from IPython import embed
 
 # fix random seeds for reproducibility
 SEED = 123
@@ -29,11 +37,32 @@ np.random.seed(SEED)
 
 def main(config):
     logger = config.get_logger('train')
-    
-    train_data = WiderFaceDataset(split='train')
 
-    train_data_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
-    _ , valid_data_loader = train_data_loader._sp
+    all_train_data = WiderFaceDataset(split='train')
+
+    split_ratio = VALIDATION_SPLIT
+    valid_len = int(len(all_train_data) * split_ratio)
+    train_len = len(all_train_data) - valid_len
+
+    train_data, valid_data = random_split(all_train_data, [train_len, valid_len])
+
+    train_data_loader = CustomDataLoader(dataset=train_data)
+    valid_data_loader = CustomDataLoader(dataset=valid_data)
+   
+
+    # print('train data:', len(train_data))
+
+    # embed(header='Debugging')
+
+    # default_data_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    # print('default data loader:', type(default_data_loader))
+
+    # train_data_loader = DataLoader(split='train', batch_size=BATCH_SIZE, validation_split=VALIDATION_SPLIT, shuffle=True)
+
+    # train_sampler, val_sampler = train_data_loader.sampler, train_data_loader.valid_sampler
+
+    # valid_data_loader = train_data_loader.split_validation()
+
     # train_data_loader = config.init_obj('train_data_loader', module_data)
 
     heads = {
@@ -65,7 +94,7 @@ def main(config):
                       config=config,
                       device=DEVICE,
                       data_loader=train_data_loader,
-                    #   valid_data_loader=val_data_loader,
+                      valid_data_loader=valid_data_loader,
                       lr_scheduler=lr_scheduler)
 
     trainer.train()

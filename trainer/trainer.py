@@ -1,3 +1,4 @@
+from config import BATCH_SIZE
 import numpy as np
 import torch
 from torchvision.utils import make_grid
@@ -22,10 +23,12 @@ class Trainer(BaseTrainer):
             # iteration-based training
             self.data_loader = inf_loop(data_loader)
             self.len_epoch = len_epoch
+
         self.valid_data_loader = valid_data_loader
         self.do_validation = self.valid_data_loader is not None
         self.lr_scheduler = lr_scheduler
-        self.log_step = int(np.sqrt(data_loader.batch_size))
+        # self.log_step = int(np.sqrt(data_loader.batch_size))
+        self.log_step = int(np.sqrt(BATCH_SIZE))
 
         self.train_metrics = MetricTracker('loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
         self.valid_metrics = MetricTracker('loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)

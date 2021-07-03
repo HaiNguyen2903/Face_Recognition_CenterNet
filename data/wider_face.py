@@ -30,7 +30,7 @@ np_str_obj_array_pattern = re.compile(r'[SaUO]')
 
 class WiderFaceDataset(Dataset):
     def __init__(self, split):
-        super(WiderFaceDataset, self).__init__()
+        # super(WiderFaceDataset, self).__init__()
 
         self.split = split.lower()
         assert split in ['train', 'test', 'val']
