@@ -6,10 +6,10 @@ from args import parser
 # DATA_DIR = '../../datasets/wider_face/'
 
 # unnote if using colab
-# DATA_DIR = '/content/drive/Shareddrives/Giang/HaiNguyen/FaceDetection/dataset/wider_face/'
+DATA_DIR = '/content/drive/Shareddrives/Giang/HaiNguyen/FaceDetection/dataset/wider_face/'
 
 # unnote if using kaggle
-DATA_DIR = '../input/widerface/wider_face/'
+# DATA_DIR = '../input/widerface/wider_face/'
 
 assert os.path.isdir(DATA_DIR)
 
@@ -70,7 +70,7 @@ DEBUG = 0
 Training parma
 '''
 SHUFFLE = True
-BATCH_SIZE = 16
+BATCH_SIZE = 8
 VALIDATION_SPLIT = 0.1
 NUMBER_WORKER = 0
 
