@@ -84,7 +84,8 @@ def main(config):
 
     # get function handles of loss and metrics
     criterion = getattr(module_loss, 'center_face_loss')
-    metrics = [getattr(module_metric, met) for met in ["accuracy", "top_k_acc"]]
+    embed()
+    # metrics = [getattr(module_metric, met) for met in ["accuracy", "top_k_acc"]]
 
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
@@ -95,7 +96,14 @@ def main(config):
     # lr_scheduler = config.init_obj('lr_scheduler', torch.optim.lr_scheduler, optimizer)
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.1)
 
-    trainer = Trainer(model, criterion, metrics, optimizer,
+    # trainer = Trainer(model, criterion, metrics, optimizer,
+    #                   config=config,
+    #                   device=DEVICE,
+    #                   data_loader=train_data_loader,
+    #                   valid_data_loader=valid_data_loader,
+    #                   lr_scheduler=lr_scheduler)
+
+    trainer = Trainer(model, criterion, optimizer,
                       config=config,
                       device=DEVICE,
                       data_loader=train_data_loader,
