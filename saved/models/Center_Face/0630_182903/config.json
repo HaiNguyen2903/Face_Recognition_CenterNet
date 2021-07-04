@@ -22,7 +22,7 @@
             "batch_size": 4,
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 2
+            "num_workers": 0
         }
     },
     "val_data_loader": {
@@ -32,7 +32,7 @@
             "batch_size": 4,
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 2
+            "num_workers": 0
         }
     },
     "optimizer": {

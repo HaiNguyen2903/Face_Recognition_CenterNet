@@ -68,7 +68,7 @@ Training parma
 SHUFFLE = True
 BATCH_SIZE = 16
 VALIDATION_SPLIT = 0.1
-NUMBER_WORKER = 2
+NUMBER_WORKER = 0
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
