@@ -53,7 +53,7 @@ class Trainer(BaseTrainer):
             for key in target.keys():
                 target[key] = target[key].to(self.device)
 
-            # data, target = data.to(self.device), target.to(self.device)
+            data, target = data.to(self.device), target.to(self.device)
 
             self.optimizer.zero_grad()
             output = self.model(data)
@@ -102,6 +102,9 @@ class Trainer(BaseTrainer):
                 data = batch["input"]
                 data = data.to(self.device)
                 target = batch
+
+                data, target = data.to(self.device), target.to(self.device)
+                
                 for key in target.keys():
                     target[key] = target[key].to(self.device)
 
