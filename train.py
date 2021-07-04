@@ -55,7 +55,6 @@ def main(config):
     train_data_loader = CustomDataLoader(dataset=mini_train_data)
     valid_data_loader = CustomDataLoader(dataset=mini_valid_data)
    
-    embed()
     # print('train data:', len(train_data))
 
     # embed(header='Debugging')
