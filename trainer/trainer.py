@@ -67,7 +67,7 @@ class Trainer(BaseTrainer):
                 self.train_metrics.update(met.__name__, met(output, target))
 
             if batch_idx % self.log_step == 0:
-                self.logger.debug('Train Epoch: {} {} Loss: {:.6f}'.format(
+                self.logger.debug('Train Epoch: {} {} Multi-Loss: {:.6f}'.format(
                     epoch,
                     self._progress(batch_idx),
                     loss.item()))
@@ -96,8 +96,14 @@ class Trainer(BaseTrainer):
         self.valid_metrics.reset()
 
         with torch.no_grad():
-            for batch_idx, (data, target) in enumerate(self.valid_data_loader):
-                data, target = data.to(self.device), target.to(self.device)
+            # for batch_idx, (data, target) in enumerate(self.valid_data_loader):
+            #     data, target = data.to(self.device), target.to(self.device)
+            for batch_idx, batch in enumerate(self.data_loader):
+                data = batch["input"]
+                data = data.to(self.device)
+                target = batch
+                for key in target.keys():
+                    target[key] = target[key].to(self.device)
 
                 output = self.model(data)
                 loss = self.criterion(output, target)
