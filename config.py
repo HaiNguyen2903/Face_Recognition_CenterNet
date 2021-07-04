@@ -9,7 +9,7 @@ from args import parser
 # DATA_DIR = '/content/drive/Shareddrives/Giang/HaiNguyen/FaceDetection/dataset/wider_face/'
 
 # unnote if using kaggle
-DATA_DIR = '../input/widerface/wider_face/'
+DATA_DIR = '../../input/widerface/wider_face/'
 
 assert os.path.isdir(DATA_DIR)
 
