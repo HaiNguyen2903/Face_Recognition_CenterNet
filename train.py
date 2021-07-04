@@ -47,7 +47,7 @@ def main(config):
     train_data, valid_data = random_split(all_train_data, [train_len, valid_len])
 
     mini_train_data, train_skip = random_split(train_data, [5000, len(train_data) - 5000])
-    mini_valid_data, val_skip = random_split(valid_data, [500, len(valid_data - 500)])
+    mini_valid_data, val_skip = random_split(valid_data, [500, len(valid_data) - 500])
 
     # train_data_loader = CustomDataLoader(dataset=train_data)
     # valid_data_loader = CustomDataLoader(dataset=valid_data)
