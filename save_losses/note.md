@@ -1,0 +1,1 @@
+this folder contain training and valid loss images
