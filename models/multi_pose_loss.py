@@ -40,6 +40,7 @@ class MultiPoseLoss(torch.nn.Module):
                     batch['hps'].detach().cpu().numpy(), 
                     batch['ind'].detach().cpu().numpy(), 
                     OUTPUT_SIZE, OUTPUT_SIZE)).to(DEVICE)
+
             if EVAL_ORACLE_KPS_OFFSET:
                 output['hp_offset'] = torch.from_numpy(gen_oracle_map(
                 batch['hp_offset'].detach().cpu().numpy(), 

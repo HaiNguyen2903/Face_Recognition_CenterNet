@@ -4,7 +4,7 @@ import torch
 from torchvision.utils import make_grid
 from base import BaseTrainer
 from utils import inf_loop, MetricTracker
-
+import matplotlib.pyplot as plt
 
 class Trainer(BaseTrainer):
     """
@@ -13,6 +13,7 @@ class Trainer(BaseTrainer):
     def __init__(self, model, criterion, metric_ftns, optimizer, config, device,
                  data_loader, valid_data_loader=None, lr_scheduler=None, len_epoch=None):
         super().__init__(model, criterion, metric_ftns, optimizer, config)
+
         self.config = config
         self.device = device
         self.data_loader = data_loader
@@ -40,7 +41,7 @@ class Trainer(BaseTrainer):
         :param epoch: Integer, current training epoch.
         :return: A log that contains average loss and metric in this epoch.
         """
-        print('training epoch {}'.format(epoch))
+
         self.model.train()
         self.train_metrics.reset()
 
@@ -50,7 +51,7 @@ class Trainer(BaseTrainer):
         for batch_idx, batch in enumerate(self.data_loader):
             data = batch['input']
             data = data.to(self.device)
-            print('training data device:', self.device)
+
             target = batch
             for key in target.keys():
                 target[key] = target[key].to(self.device)
@@ -58,6 +59,11 @@ class Trainer(BaseTrainer):
             self.optimizer.zero_grad()
             output = self.model(data)
             loss = self.criterion(output, target)
+
+            print('train loss in epoch {}: {}'.format(epoch, loss))
+
+            self.train_losses[epoch-1] = loss.item()
+
             loss.backward()
             self.optimizer.step()
 
@@ -71,7 +77,7 @@ class Trainer(BaseTrainer):
                     epoch,
                     self._progress(batch_idx),
                     loss.item()))
-                self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
+                # self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
             if batch_idx == self.len_epoch:
                 break
@@ -113,6 +119,14 @@ class Trainer(BaseTrainer):
 
                 output = self.model(data)
                 loss = self.criterion(output, target)
+
+                print('valid loss in epoch {}: {}'.format(epoch, loss))
+
+                self.valid_losses[epoch-1] = loss.item()
+
+                if epoch == self.epochs:
+                    plt.plot(self.train_losses, 'r')
+                    plt.plot(self.valid_losses, 'b')
 
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                 self.valid_metrics.update('loss', loss.item())

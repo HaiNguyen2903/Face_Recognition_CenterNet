@@ -2,7 +2,7 @@ import torch
 from abc import abstractmethod
 from numpy import inf
 from logger.visualization import TensorboardWriter
-
+import numpy as np
 
 class BaseTrainer:
     """
@@ -19,8 +19,15 @@ class BaseTrainer:
 
         cfg_trainer = config['trainer']
         self.epochs = cfg_trainer['epochs']
+
         self.save_period = cfg_trainer['save_period']
         self.monitor = cfg_trainer.get('monitor', 'off')
+
+        # loss for each epoch
+        print('Number epoches:', self.epochs)
+        self.train_losses = np.random.rand(self.epochs)
+        self.valid_losses = np.random.rand(self.epochs)
+
 
         # configuration to monitor model performance and save best
         if self.monitor == 'off':

@@ -49,8 +49,8 @@ def main(config):
     mini_train_len = 50
     mini_valid_len = 50
 
-    mini_train_data, train_skip = random_split(train_data, [mini_train_len, len(train_data) - mini_train_len])
-    mini_valid_data, val_skip = random_split(valid_data, [mini_valid_len, len(valid_data) - mini_valid_len])
+    mini_train_data, _ = random_split(train_data, [mini_train_len, len(train_data) - mini_train_len])
+    mini_valid_data, _ = random_split(valid_data, [mini_valid_len, len(valid_data) - mini_valid_len])
 
     # train_data_loader = CustomDataLoader(dataset=train_data)
     # valid_data_loader = CustomDataLoader(dataset=valid_data)
@@ -106,6 +106,7 @@ def main(config):
                       valid_data_loader=valid_data_loader,
                       lr_scheduler=lr_scheduler)
 
+    embed()
     # trainer = Trainer(model, criterion, optimizer,
 
     
