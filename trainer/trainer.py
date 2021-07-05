@@ -128,8 +128,19 @@ class Trainer(BaseTrainer):
                 print('current epoch {}'.format(epoch))
                 if epoch >= self.epochs:
                     print('last epoch')
-                    plt.plot(self.train_losses, 'r')
-                    plt.plot(self.valid_losses, 'b')
+
+                    fig = plt.figure()
+
+                    plt.title("Training and Validat`ion Loss")
+                    plt.plot(self.train_losses, 'r', label="train loss")
+                    plt.plot(self.valid_losses, 'b', label="valid loss")
+                    plt.xlabel("iterations")
+                    plt.ylabel("Multi Loss")
+                    plt.legend()
+
+                    save_path = '../saved/losses/loss.png'
+                    fig.savefig(save_path)
+
 
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                 self.valid_metrics.update('loss', loss.item())

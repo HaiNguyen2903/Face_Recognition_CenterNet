@@ -70,7 +70,8 @@ DEBUG = 0
 Training parma
 '''
 SHUFFLE = True
-BATCH_SIZE = 8
+BATCH_SIZE = 16
+
 VALIDATION_SPLIT = 0.1
 NUMBER_WORKER = 0
 
