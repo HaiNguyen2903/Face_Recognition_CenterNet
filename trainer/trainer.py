@@ -138,7 +138,7 @@ class Trainer(BaseTrainer):
                     plt.ylabel("Multi Loss")
                     plt.legend()
 
-                    save_path = '../saved/losses/loss.png'
+                    save_path = 'save_losses/loss.png'
                     fig.savefig(save_path)
 
 
