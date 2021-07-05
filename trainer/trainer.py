@@ -62,6 +62,8 @@ class Trainer(BaseTrainer):
             loss = self.criterion(output, target)
 
             print('train loss in epoch {}: {}'.format(epoch, loss.item()))
+            print('train loss {}'.format(loss))
+            print('train loss item {}'.format(loss.item()))
 
             self.train_losses[epoch-1] = loss.item()
 
@@ -99,8 +101,7 @@ class Trainer(BaseTrainer):
         :param epoch: Integer, current training epoch.
         :return: A log that contains information about validation
         """
-        print('validing epoch {}'.format(epoch))
-
+        print('valid epoch {}'.format(epoch))
         self.model.eval()
         self.valid_metrics.reset()
 
@@ -123,15 +124,16 @@ class Trainer(BaseTrainer):
 
                 print('valid loss in epoch {}: {}'.format(epoch, loss.item()))
 
+                print('valid loss {}'.format(loss))
+                print('valid loss item {}'.format(loss.item()))
                 self.valid_losses[epoch-1] = loss.item()
 
-                print('current epoch {}'.format(epoch))
                 if epoch >= self.epochs:
                     print('last epoch')
 
                     fig = plt.figure()
 
-                    plt.title("Training and Validat`ion Loss")
+                    plt.title("Training loss and Validaion loss")
                     plt.plot(self.train_losses, 'r', label="train loss")
                     plt.plot(self.valid_losses, 'b', label="valid loss")
                     plt.xlabel("iterations")
