@@ -1,3 +1,4 @@
+import matplotlib
 from config import BATCH_SIZE
 import numpy as np
 import torch
@@ -60,7 +61,7 @@ class Trainer(BaseTrainer):
             output = self.model(data)
             loss = self.criterion(output, target)
 
-            print('train loss in epoch {}: {}'.format(epoch, loss))
+            print('train loss in epoch {}: {}'.format(epoch, loss.item()))
 
             self.train_losses[epoch-1] = loss.item()
 
@@ -120,7 +121,7 @@ class Trainer(BaseTrainer):
                 output = self.model(data)
                 loss = self.criterion(output, target)
 
-                print('valid loss in epoch {}: {}'.format(epoch, loss))
+                print('valid loss in epoch {}: {}'.format(epoch, loss.item()))
 
                 self.valid_losses[epoch-1] = loss.item()
 
