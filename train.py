@@ -106,7 +106,7 @@ def main(config):
                       valid_data_loader=valid_data_loader,
                       lr_scheduler=lr_scheduler)
 
-    embed()
+
     # trainer = Trainer(model, criterion, optimizer,
 
     

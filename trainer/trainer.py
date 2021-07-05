@@ -109,7 +109,7 @@ class Trainer(BaseTrainer):
             for batch_idx, batch in enumerate(self.data_loader):
                 data = batch["input"]
                 data = data.to(self.device)
-                print('valid data device:', self.device)
+
                 target = batch
 
                 # data, target = data.to(self.device), target.to(self.device)
@@ -124,7 +124,9 @@ class Trainer(BaseTrainer):
 
                 self.valid_losses[epoch-1] = loss.item()
 
-                if epoch == self.epochs:
+                print('current epoch {}'.format(epoch))
+                if epoch >= self.epochs:
+                    print('last epoch')
                     plt.plot(self.train_losses, 'r')
                     plt.plot(self.valid_losses, 'b')
 
