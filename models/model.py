@@ -97,7 +97,7 @@ class IDAUp(nn.Module):
 
 
 class MobileNetUp(nn.Module):
-    def __init__(self, channels, out_dim = 24):
+    def __init__(self, channels, out_dim = 64):  # was 24
         super(MobileNetUp, self).__init__()
         channels =  channels[::-1]
         # print('MobileNetUp channels:', channels)
@@ -273,7 +273,7 @@ def load_model(model,state_dict):
 
 
 class MobileNetSeg(BaseModel):
-    def __init__(self, base_name, heads, head_conv=24, pretrained = True):
+    def __init__(self, base_name, heads, head_conv=64, pretrained = True):      # was 24
         super(MobileNetSeg, self).__init__()
         self.heads = heads
 

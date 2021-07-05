@@ -40,7 +40,7 @@ class Trainer(BaseTrainer):
         :param epoch: Integer, current training epoch.
         :return: A log that contains average loss and metric in this epoch.
         """
-        print('training epoch {}', epoch)
+        print('training epoch {}'.format(epoch))
         self.model.train()
         self.train_metrics.reset()
 
@@ -50,6 +50,7 @@ class Trainer(BaseTrainer):
         for batch_idx, batch in enumerate(self.data_loader):
             data = batch['input']
             data = data.to(self.device)
+            print('training data device:', self.device)
             target = batch
             for key in target.keys():
                 target[key] = target[key].to(self.device)
@@ -91,7 +92,8 @@ class Trainer(BaseTrainer):
         :param epoch: Integer, current training epoch.
         :return: A log that contains information about validation
         """
-        print('validing epoch {}', epoch)
+        print('validing epoch {}'.format(epoch))
+
         self.model.eval()
         self.valid_metrics.reset()
 
@@ -101,6 +103,7 @@ class Trainer(BaseTrainer):
             for batch_idx, batch in enumerate(self.data_loader):
                 data = batch["input"]
                 data = data.to(self.device)
+                print('valid data device:', self.device)
                 target = batch
 
                 # data, target = data.to(self.device), target.to(self.device)
