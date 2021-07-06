@@ -115,7 +115,12 @@ class Trainer(BaseTrainer):
                 target = batch
 
                 # data, target = data.to(self.device), target.to(self.device)
+                print('valid target:', target)
+                print()
 
+                print('valid data:', data)
+
+                print()
                 for key in target.keys():
                     target[key] = target[key].to(self.device)
 
