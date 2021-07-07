@@ -21,6 +21,7 @@ import json
 # from torch._six import container_abcs, string_classes, int_classes
 import collections
 from torch._six import string_classes
+from IPython import embed
 
 
 np_str_obj_array_pattern = re.compile(r'[SaUO]')
@@ -221,6 +222,7 @@ class WiderFaceDataset(Dataset):
 
         # Random scale image and annotation ?
         img, anns = Data_anchor_sample(img, anns)
+        print(img.shape)
         plt.imshow(img)
 
         # Define height, weight, center of the image
@@ -259,9 +261,17 @@ class WiderFaceDataset(Dataset):
                 img = img[:, ::-1, :]
                 c[0] =  width - c[0] - 1
 
+
             # Get transform matrix into input resolution (800x800) and apply to input image
+
         trans_input = get_affine_transform(c, s, rot, [input_res, input_res])
         inp = cv2.warpAffine(img, trans_input, (input_res, input_res), flags=cv2.INTER_LINEAR)
+
+        # inp = cv2.resize(img, (input_res, input_res), interpolation = cv2.INTER_AREA)
+        # inp = cv2.resize(img, (input_res, input_res))
+        print('after transform')
+        plt.imshow(inp)
+        
 
         # Prerocessing input
         inp = (inp.astype(np.float32) / 255.)

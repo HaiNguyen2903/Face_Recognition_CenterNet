@@ -97,7 +97,7 @@ class IDAUp(nn.Module):
 
 
 class MobileNetUp(nn.Module):
-    def __init__(self, channels, out_dim = 64):  # was 24
+    def __init__(self, channels, out_dim = 24):  # was 24
         super(MobileNetUp, self).__init__()
         channels =  channels[::-1]
         # print('MobileNetUp channels:', channels)

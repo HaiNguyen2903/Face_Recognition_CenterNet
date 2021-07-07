@@ -46,8 +46,8 @@ def main(config):
 
     train_data, valid_data = random_split(all_train_data, [train_len, valid_len])
 
-    mini_train_len = 50
-    mini_valid_len = 50
+    mini_train_len = 33
+    mini_valid_len = 33
 
     mini_train_data, _ = random_split(train_data, [mini_train_len, len(train_data) - mini_train_len])
     mini_valid_data, _ = random_split(valid_data, [mini_valid_len, len(valid_data) - mini_valid_len])
@@ -57,6 +57,7 @@ def main(config):
 
     train_data_loader = CustomDataLoader(dataset=mini_train_data)
     valid_data_loader = CustomDataLoader(dataset=mini_valid_data)
+
    
     # print('train data:', len(train_data))
 
@@ -115,6 +116,7 @@ def main(config):
     #                   data_loader=train_data_loader,
     #                   valid_data_loader=valid_data_loader,
     #                   lr_scheduler=lr_scheduler)
+
 
     trainer.train()
     

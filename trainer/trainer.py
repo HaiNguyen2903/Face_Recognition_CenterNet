@@ -70,6 +70,8 @@ class Trainer(BaseTrainer):
             loss.backward()
             self.optimizer.step()
 
+            # torch.cuda.empty_cache()
+
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', loss.item())
             for met in self.metric_ftns:
@@ -115,7 +117,7 @@ class Trainer(BaseTrainer):
                 target = batch
 
                 # data, target = data.to(self.device), target.to(self.device)
-                print('valid target:', target)
+                print('valid target:', target.keys())
                 print()
 
                 print('valid data:', data)
