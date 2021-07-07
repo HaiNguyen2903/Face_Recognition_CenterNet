@@ -221,9 +221,9 @@ class WiderFaceDataset(Dataset):
         # print(img_path)
 
         # Random scale image and annotation ?
-        img, anns = Data_anchor_sample(img, anns)
-        print(img.shape)
-        plt.imshow(img)
+        # img, anns = Data_anchor_sample(img, anns)
+        # print(img.shape)
+        # plt.imshow(img)
 
         # Define height, weight, center of the image
         height, width = img.shape[0], img.shape[1]
@@ -269,8 +269,8 @@ class WiderFaceDataset(Dataset):
 
         # inp = cv2.resize(img, (input_res, input_res), interpolation = cv2.INTER_AREA)
         # inp = cv2.resize(img, (input_res, input_res))
-        print('after transform')
-        plt.imshow(inp)
+        # print('after transform')
+        # plt.imshow(inp)
         
 
         # Prerocessing input
