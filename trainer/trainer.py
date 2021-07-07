@@ -62,15 +62,13 @@ class Trainer(BaseTrainer):
             loss = self.criterion(output, target)
 
             print('train loss in epoch {}: {}'.format(epoch, loss.item()))
-            print('train loss {}'.format(loss))
-            print('train loss item {}'.format(loss.item()))
 
             self.train_losses[epoch-1] = loss.item()
 
             loss.backward()
             self.optimizer.step()
 
-            # torch.cuda.empty_cache()
+            torch.cuda.empty_cache()
 
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', loss.item())
@@ -117,12 +115,6 @@ class Trainer(BaseTrainer):
                 target = batch
 
                 # data, target = data.to(self.device), target.to(self.device)
-                print('valid target:', target.keys())
-                print()
-
-                print('valid data:', data)
-
-                print()
                 for key in target.keys():
                     target[key] = target[key].to(self.device)
 
@@ -131,8 +123,6 @@ class Trainer(BaseTrainer):
 
                 print('valid loss in epoch {}: {}'.format(epoch, loss.item()))
 
-                print('valid loss {}'.format(loss))
-                print('valid loss item {}'.format(loss.item()))
                 self.valid_losses[epoch-1] = loss.item()
 
                 if epoch >= self.epochs:
