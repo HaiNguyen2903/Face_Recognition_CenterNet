@@ -95,7 +95,6 @@ class IDAUp(nn.Module):
         out = x + y
         return out
 
-
 class MobileNetUp(nn.Module):
     def __init__(self, channels, out_dim = 24):  # was 24
         super(MobileNetUp, self).__init__()

@@ -261,11 +261,15 @@ class WiderFaceDataset(Dataset):
                 img = img[:, ::-1, :]
                 c[0] =  width - c[0] - 1
 
-
+        # plt.imshow(img)
             # Get transform matrix into input resolution (800x800) and apply to input image
 
         trans_input = get_affine_transform(c, s, rot, [input_res, input_res])
         inp = cv2.warpAffine(img, trans_input, (input_res, input_res), flags=cv2.INTER_LINEAR)
+
+        fig, ax = plt.subplots()
+
+        ax.imshow(inp)
 
         # inp = cv2.resize(img, (input_res, input_res), interpolation = cv2.INTER_AREA)
         # inp = cv2.resize(img, (input_res, input_res))
@@ -428,12 +432,31 @@ class WiderFaceDataset(Dataset):
                 pts[:, 0] = width - pts[:, 0] - 1
                 for e in self.flip_idx:
                     pts[e[0]], pts[e[1]] = pts[e[1]].copy(), pts[e[0]].copy()
-
+            
             # applying affine transform to bounding box to get bbox coordinate in the output heat map
             bbox[:2] = affine_transform(bbox[:2], trans_output)
             bbox[2:] = affine_transform(bbox[2:], trans_output)
             # handling case that bounding box has coordinate that out of range with the output resolution
             bbox = np.clip(bbox, 0, output_res - 1)
+
+            # x1 = bbox[0]
+            # y1 = bbox[1]
+            # x2 = bbox[2]
+            # y2 = bbox[3]
+
+            # rect = patches.Rectangle((x1, y1), x2-x1, y2-y1, linewidth=1, edgecolor='r', facecolor='none')
+            # ax.add_patch(rect)
+            # plt.show()
+
+            # rect = patches.Rectangle((x1, y1), x2-x1, y2-y1, linewidth=1, edgecolor='r', facecolor='none')
+            # ax.add_patch(rect)
+            
+
+            # # applying affine transform to bounding box to get bbox coordinate in the output heat map
+            # bbox[:2] = affine_transform(bbox[:2], trans_output)
+            # bbox[2:] = affine_transform(bbox[2:], trans_output)
+            # # handling case that bounding box has coordinate that out of range with the output resolution
+            # bbox = np.clip(bbox, 0, output_res - 1)
 
             # height and weight of the bbox
             h_bbox, w_bbox = bbox[3] - bbox[1], bbox[2] - bbox[0]
