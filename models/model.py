@@ -272,7 +272,7 @@ def load_model(model,state_dict):
 
 
 class MobileNetSeg(BaseModel):
-    def __init__(self, base_name, heads, head_conv=64, pretrained = True):      # was 24
+    def __init__(self, base_name, heads, head_conv=24, pretrained = True):      # was 24
         super(MobileNetSeg, self).__init__()
         self.heads = heads
 
