@@ -608,20 +608,20 @@ def centerface_decode(
     scores, inds, clses, ys_int, xs_int = _topk(heat, K=K)
     # scores, inds, clses, ys_int, xs_int, K = threshold_choose(heat, threshold=0.05)
 
-    if reg is not None:  # 回归的中心点偏移量 Center point offset of regression
+    if reg is not None:  # Center point offset of regression
         reg = _tranpose_and_gather_feat(reg, inds)
         reg = reg.view(batch, K, 2)
-        xs = xs_int.view(batch, K, 1) + reg[:, :, 0:1]                  # 1. 中心点，后面乘了4  Center point, multiplied by 4
+        xs = xs_int.view(batch, K, 1) + reg[:, :, 0:1]                  # 1. Center point, multiplied by 4
         ys = ys_int.view(batch, K, 1) + reg[:, :, 1:2]
         # xs = (xs_int.view(batch, K, 1) + reg[:, :, 0:1] + 0.5)
-        # ys = (ys_int.view(batch, K, 1) + reg[:, :, 1:2] + 0.5)            # 1. 中心点，按centerface的方式计算 Center point, calculated according to the centerface method
+        # ys = (ys_int.view(batch, K, 1) + reg[:, :, 1:2] + 0.5)            # 1. Center point, calculated according to the centerface method
     else:
         xs = xs_int.view(batch, K, 1) + 0.5
         ys = ys_int.view(batch, K, 1) + 0.5
 
-    wh = _tranpose_and_gather_feat(wh, inds)  # 人脸bbox矩形框的宽高    The width and height of the face bbox rectangle
-    wh = wh.view(batch, K, 2)                                             # 2. wh,第一种方式    wh, the first way
-    wh = wh.exp() * 4.                                                    # 2. wh,第二种式式    wh, the second formula
+    wh = _tranpose_and_gather_feat(wh, inds)  # The width and height of the face bbox rectangle
+    wh = wh.view(batch, K, 2)                                             # 2. wh, the first way
+    wh = wh.exp() * 4.                                                    # 2.  wh, the second formula
     clses = clses.view(batch, K, 1).float()
     scores = scores.view(batch, K, 1)
     bboxes = torch.cat([xs - wh[..., 0:1] / 2,
@@ -629,19 +629,19 @@ def centerface_decode(
                         xs + wh[..., 0:1] / 2,
                         ys + wh[..., 1:2] / 2], dim=2)
 
-    kps = _tranpose_and_gather_feat(kps, inds)                                      # 3. 人脸关键点 Key Points of Human Face
+    kps = _tranpose_and_gather_feat(kps, inds)                                      # 3. Key Points of Human Face
     kps = kps.view(batch, K, num_joints * 2)
-    kps[..., ::2] += xs.view(batch, K, 1).expand(batch, K, num_joints)  # 第一次通过中心点偏移获得的关节点的坐标    The coordinates of the joint points obtained by the center point offset for the first time
+    kps[..., ::2] += xs.view(batch, K, 1).expand(batch, K, num_joints)  # The coordinates of the joint points obtained by the center point offset for the first time
     kps[..., 1::2] += ys.view(batch, K, 1).expand(batch, K, num_joints)
 
     if hm_hp is not None:   
-        hm_hp = _nms(hm_hp)  # 第二次：通过关节点热力图求得关节点的中心点   Second time: get the center point of the joint point through the joint point heat map
+        hm_hp = _nms(hm_hp)  # Second time: get the center point of the joint point through the joint point heat map
         thresh = 0.1
         kps = kps.view(batch, K, num_joints, 2).permute(
             0, 2, 1, 3).contiguous()  # b x J x K x 2
         reg_kps = kps.unsqueeze(3).expand(batch, num_joints, K, K, 2)
         hm_score, hm_inds, hm_ys, hm_xs = _topk_channel(hm_hp, K=K)  # b x J x K
-        if hp_offset is not None:  # 关节点的中心的偏移 Offset of the center of the node
+        if hp_offset is not None:  # Offset of the center of the node
             hp_offset = _tranpose_and_gather_feat(
                 hp_offset, hm_inds.view(batch, -1))
             hp_offset = hp_offset.view(batch, num_joints, K, 2)
@@ -651,13 +651,13 @@ def centerface_decode(
             hm_xs = hm_xs + 0.5
             hm_ys = hm_ys + 0.5
 
-        mask = (hm_score > thresh).float()  # 选置信度大于0.1的 Choose the confidence level greater than 0.1
+        mask = (hm_score > thresh).float()  # Choose the confidence level greater than 0.1
         hm_score = (1 - mask) * -1 + mask * hm_score
         hm_ys = (1 - mask) * (-10000) + mask * hm_ys
         hm_xs = (1 - mask) * (-10000) + mask * hm_xs
         hm_kps = torch.stack([hm_xs, hm_ys], dim=-1).unsqueeze(
             2).expand(batch, num_joints, K, K, 2)
-        dist = (((reg_kps - hm_kps) ** 2).sum(dim=4) ** 0.5)  # 两次求解的关节点求距离  Find the distance between the joint points solved twice
+        dist = (((reg_kps - hm_kps) ** 2).sum(dim=4) ** 0.5)  #  Find the distance between the joint points solved twice
         min_dist, min_ind = dist.min(dim=3)  # b x J x K
         hm_score = hm_score.gather(2, min_ind).unsqueeze(-1)  # b x J x K x 1
         min_dist = min_dist.unsqueeze(-1)
@@ -666,7 +666,6 @@ def centerface_decode(
         hm_kps = hm_kps.gather(3, min_ind)
         hm_kps = hm_kps.view(batch, num_joints, K, 2)
 
-        # 如果在bboxes中则用第二种方法的关节点，在bboxes外用第一种方法提取的关节点，就是优先选第二种方法
         # If the joint points of the second method are used in bboxes, and the joint points extracted by the first method outside bboxes, the second method is preferred
         l = bboxes[:, :, 0].view(batch, 1, K, 1).expand(batch, num_joints, K, 1)
         t = bboxes[:, :, 1].view(batch, 1, K, 1).expand(batch, num_joints, K, 1)
