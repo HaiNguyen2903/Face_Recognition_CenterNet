@@ -42,3 +42,6 @@ The model still achives a quite low result on the WIDER FACE dataset compares to
 
 ![](images/result.png)
 
+## Note
+Special thanks to [Mr.Duong repo](https://github.com/ledaiduongvnth/CenterFace), which help me a lots in this project :D
+
